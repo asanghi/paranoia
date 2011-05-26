@@ -5,6 +5,10 @@ module Paranoia
 
   module Query
     def paranoid? ; true ; end
+
+    def find_only_deleted
+      unscoped.only_deleted
+    end
   end
 
   def destroy
@@ -24,6 +28,7 @@ class ActiveRecord::Base
   def self.acts_as_paranoid
     self.send(:include, Paranoia)
     default_scope :conditions => { :deleted_at => nil }
+    scope :only_deleted, :conditions => ['deleted_at is not null']
   end
 
   def self.paranoid? ; false ; end
